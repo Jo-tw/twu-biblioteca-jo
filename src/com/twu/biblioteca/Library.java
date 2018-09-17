@@ -1,12 +1,13 @@
 package com.twu.biblioteca;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class Library {
     private List<Book> bookList;
 
-    Library(List<Book> bookList) {
-        this.bookList = bookList;
+    Library() {
+        this.bookList = new ArrayList<Book>();
     }
 
     List<Book> getBookList() {
@@ -20,7 +21,6 @@ class Library {
     void loadBooks() {
         this.bookList.add(new Book("To Kill a Mockingbird", "Harper Lee", 1964));
         this.bookList.add(new Book("1984", "George Orwell", 1949));
-
         this.bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald  ", 1964));
         this.bookList.add(new Book("Harry Potter and the Sorcerer's Stone", "J. K. Rowling", 1996));
         this.bookList.add(new Book("The Hobbit", "J.R.R. Tolkien", 1964));
@@ -32,20 +32,24 @@ class Library {
 
     void printAvailableBooks() {
         boolean firstLoop = true;
+        String formatText;
         for (Book b : this.bookList) {
-            if (b.isAvailability()) {
+            if (b.isAvailable()) {
 
                 if (firstLoop) {
-                    System.out.printf("%-10s %-10s %-10s %-10s%n", "Index", "Title", "Author", "Year");
-                    firstLoop = false;
+                    formatText = String.format("%-10s %-30s %-10s %-10s", "ID", "Title", "Author", "Year");
+                    BibliotecaApp.printer(formatText);
+                            firstLoop = false;
                 }
 
-                System.out.printf("%-10.10s %-10.10s %-10.10s %-10.10s%n", this.bookList.indexOf(b), b.getTitle(), b.getAuthor(), String.valueOf(b.getYear()));
+                //System.out.printf("%-10s %-30.20s %-10.10s %-10.10s%n", this.bookList.indexOf(b), b.getTitle(), b.getAuthor(), String.valueOf(b.getYear()));
+                formatText = String.format("%-10s %-30.25s %-10.10s %-10.10s", this.bookList.indexOf(b), b.getTitle(), b.getAuthor(), String.valueOf(b.getYear()));
+                BibliotecaApp.printer(formatText);
             }
 
         }
         if (firstLoop) {
-            System.out.println("There are no books available right now");
+            BibliotecaApp.printer("There are no books available right now");
         }
     }
 
@@ -54,9 +58,9 @@ class Library {
     }
 
     void rentBook(int id) {
-        if (this.isBookInLibrary(id) && this.bookList.get(id).isAvailability()) {
+        if (this.isBookInLibrary(id) && this.bookList.get(id).isAvailable()) {
 
-            this.bookList.get(id).setAvailability(false);
+            this.bookList.get(id).setAvailable(false);
             BibliotecaApp.printer("Thank you! Enjoy the book");
             return;
 
@@ -67,8 +71,8 @@ class Library {
     }
 
     void returnBook(int id) {
-        if (this.isBookInLibrary(id) && !this.bookList.get(id).isAvailability()) {
-            this.bookList.get(id).setAvailability(true);
+        if (this.isBookInLibrary(id) && !this.bookList.get(id).isAvailable()) {
+            this.bookList.get(id).setAvailable(true);
             BibliotecaApp.printer("Thank you for returning the book");
         } else {
             BibliotecaApp.printer("That is not a valid book to return");

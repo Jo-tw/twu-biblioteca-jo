@@ -4,18 +4,18 @@ public class Book {
 
 
     private String title;
-    private String Author;
+    private String author;
     private int year;
-    private boolean availability;
+    private boolean available;
 
     Book(String title, String author, int year) {
         this.title = title;
-        Author = author;
+        this.author = author;
         this.year = year;
-        this.availability = true;
+        this.available = true;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
@@ -23,15 +23,15 @@ public class Book {
         this.title = title;
     }
 
-    public String getAuthor() {
-        return Author;
+    String getAuthor() {
+        return author;
     }
 
     public void setAuthor(String author) {
-        Author = author;
+        this.author = author;
     }
 
-    public int getYear() {
+    int getYear() {
         return year;
     }
 
@@ -39,11 +39,11 @@ public class Book {
         this.year = year;
     }
 
-    public boolean isAvailability() {
-        return availability;
+    boolean isAvailable() {
+        return available;
     }
 
-    public void setAvailability(boolean availability) {
-        this.availability = availability;
+    void setAvailable(boolean available) {
+        this.available = available;
     }
 }

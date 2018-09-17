@@ -15,7 +15,7 @@ public class LibraryTest {
     private Book b1 = new Book("To Kill a Mockingbird", "Harper Lee", 1964);
     private Book b2 = new Book("1984", "George Orwell", 1949);
     private List<Book> emptyList = new ArrayList<Book>();
-    private Library bangaloreLibrary = new Library(emptyList);
+    private Library bangaloreLibrary = new Library();
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
 
@@ -48,7 +48,10 @@ public class LibraryTest {
     public void printAvailableBooksTest() {
         bangaloreLibrary.getBookList().add(b1);
         bangaloreLibrary.printAvailableBooks();
-        assertEquals("Index      Title      Author     Year      \n0          To Kill a  Harper Lee 1964      \n", outContent.toString());
+        String testBook = String.format("%-10s %-30.25s %-10.10s %-10.10s%n", 0, b1.getTitle(), b1.getAuthor(), String.valueOf(b1.getYear()));
+        String testHeader = String.format("%-10s %-30s %-10s %-10s%n", "ID", "Title", "Author", "Year");
+        String testBoth = testHeader + testBook;
+        assertEquals(testBoth , outContent.toString());
     }
 
     @Test
@@ -59,7 +62,7 @@ public class LibraryTest {
 
     @Test
     public void printNoAvailableBooksTest() {
-        b1.setAvailability(false);
+        b1.setAvailable(false);
         bangaloreLibrary.printAvailableBooks();
         assertEquals("There are no books available right now\n", outContent.toString());
     }
@@ -68,13 +71,13 @@ public class LibraryTest {
     public void isBookInLibraryTest() {
         bangaloreLibrary.getBookList().add(b1);
         bangaloreLibrary.getBookList().add(b1);
-        assertEquals(true, bangaloreLibrary.isBookInLibrary(0));
+        assertTrue( bangaloreLibrary.isBookInLibrary(0));
 
     }
 
     @Test
     public void isNotBookInLibraryTest() {
-        assertEquals(false, bangaloreLibrary.isBookInLibrary(5));
+        assertFalse(bangaloreLibrary.isBookInLibrary(5));
 
     }
 
@@ -100,23 +103,23 @@ public class LibraryTest {
         bangaloreLibrary.getBookList().add(b1);
         bangaloreLibrary.getBookList().add(b2);
         bangaloreLibrary.rentBook(0);
-        assertEquals(false, bangaloreLibrary.getBookList().get(0).isAvailability());
+        assertFalse(bangaloreLibrary.getBookList().get(0).isAvailable());
 
     }
 
     @Test
-    public void SuccesReturnTest() {
+    public void succesReturnTest() {
         bangaloreLibrary.getBookList().add(b1);
         bangaloreLibrary.getBookList().add(b2);
         bangaloreLibrary.rentBook(1);
-        assertEquals(false, bangaloreLibrary.getBookList().get(1).isAvailability());
+        assertFalse(bangaloreLibrary.getBookList().get(1).isAvailable());
         bangaloreLibrary.returnBook(1);
-        assertEquals(true, bangaloreLibrary.getBookList().get(1).isAvailability());
+        assertTrue( bangaloreLibrary.getBookList().get(1).isAvailable());
 
     }
 
     @Test
-    public void SuccessReturnBookMsgTest() {
+    public void successReturnBookMsgTest() {
         bangaloreLibrary.getBookList().add(b1);
         bangaloreLibrary.getBookList().add(b2);
         bangaloreLibrary.rentBook(1);
