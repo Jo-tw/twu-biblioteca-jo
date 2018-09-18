@@ -8,32 +8,55 @@ public class BibliotecaApp {
         System.out.println(toBePrinted);
     }
 
+    static void printer(String toBePrinted, String type) {
+        System.out.printf(toBePrinted, type);
+    }
+
+
 
     public static void main(String[] args) {
-        //new BibliotecaApp(new Library(), new Scanner());
         BibliotecaApp.printer("\nWelcome to Bangalore Public Library");
         Library bangolore = new Library();
         bangolore.loadBooks();
+        bangolore.loadMovies();
+        bangolore.loadUsers();
         int id;
-        String choice ;
+        String libNumber;
+        String pass;
         Scanner scan = new Scanner(System.in);
+        do{
+
+            BibliotecaApp.printer("Please login in the system to continue");
+            BibliotecaApp.printer("Enter your Library Number:");
+            libNumber = scan.nextLine();
+            BibliotecaApp.printer("Enter your Password:");
+            pass = scan.nextLine();
+
+
+
+        }while (!bangolore.login(libNumber, pass));
+        String choice ;
         do {
-            BibliotecaApp.printer("\n\nPlease select an option: \n a. List books \n b. Checkout a book \n c. Return a book \n q. Quit\n\n");
+
+            BibliotecaApp.printer("\n\nPlease select an option: \n a. List books \n b. List movies \n c. Checkout an item \n d. Return an item \n q. Quit\n\n");
             choice = scan.nextLine();
             switch (choice) {
                 case "a":
-                    bangolore.printAvailableBooks();
+                    bangolore.printAvailableItems("book");
                     break;
                 case "b":
-                    BibliotecaApp.printer("Enter the Number ID of the book you want to check out: ");
+                    bangolore.printAvailableItems("movie");
+                    break;
+                case "c":
+                    BibliotecaApp.printer("Enter the Number ID of the item you want to check out: ");
                     id = Integer.parseInt(scan.nextLine());
-                    bangolore.rentBook(id);
+                    bangolore.rentItem(id,libNumber);
                     break;
 
-                case "c":
-                    BibliotecaApp.printer("Enter the Number ID of the book you want to return: ");
+                case "d":
+                    BibliotecaApp.printer("Enter the Number ID of the item you want to return: ");
                     id = Integer.parseInt(scan.nextLine());
-                    bangolore.returnBook(id);
+                    bangolore.returnItem(id, libNumber);
                     break;
 
                 case "q":

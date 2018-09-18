@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryTest {
-    private Book b1 = new Book("To Kill a Mockingbird", "Harper Lee", 1964);
-    private Book b2 = new Book("1984", "George Orwell", 1949);
-    private List<Book> emptyList = new ArrayList<Book>();
+    private Book b1 = new Book("To Kill a Mockingbird", 101,"Harper Lee", 1964);
+    private Book b2 = new Book("1984", 102,"George Orwell", 1949);
+    private User testUser = new User("Sergio","sergio@tw.com", "423456789", "4444-4444");
+    private List<Item> emptyList = new ArrayList<>();
     private Library bangaloreLibrary = new Library();
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -32,116 +33,104 @@ public class LibraryTest {
 
     @Test
     public void emptyBookListTest() {
-        List returnedList = bangaloreLibrary.getBookList();
+        List returnedList = bangaloreLibrary.getItemList();
         assertEquals(emptyList, returnedList);
 
     }
 
     @Test
     public void bookListTest() {
-        bangaloreLibrary.getBookList().add(b1);
-        assertEquals(1, bangaloreLibrary.getBookList().size());
+        bangaloreLibrary.getItemList().add(b1);
+        assertEquals(1, bangaloreLibrary.getItemList().size());
 
     }
 
-    @Test
-    public void printAvailableBooksTest() {
-        bangaloreLibrary.getBookList().add(b1);
-        bangaloreLibrary.printAvailableBooks();
-        String testBook = String.format("%-10s %-30.25s %-10.10s %-10.10s%n", 0, b1.getTitle(), b1.getAuthor(), String.valueOf(b1.getYear()));
-        String testHeader = String.format("%-10s %-30s %-10s %-10s%n", "ID", "Title", "Author", "Year");
-        String testBoth = testHeader + testBook;
-        assertEquals(testBoth , outContent.toString());
-    }
 
     @Test
     public void printNoBooksTest() {
-        bangaloreLibrary.printAvailableBooks();
-        assertEquals("There are no books available right now\n", outContent.toString());
+        bangaloreLibrary.printAvailableItems("book");
+        assertEquals("There are no movies nor books available right now\n", outContent.toString());
     }
 
     @Test
     public void printNoAvailableBooksTest() {
-        b1.setAvailable(false);
-        bangaloreLibrary.printAvailableBooks();
-        assertEquals("There are no books available right now\n", outContent.toString());
+        bangaloreLibrary.printAvailableItems("movie");
+        assertEquals("There are no movies nor books available right now\n", outContent.toString());
     }
 
     @Test
     public void isBookInLibraryTest() {
-        bangaloreLibrary.getBookList().add(b1);
-        bangaloreLibrary.getBookList().add(b1);
-        assertTrue( bangaloreLibrary.isBookInLibrary(0));
+        bangaloreLibrary.getItemList().add(b1);
+        bangaloreLibrary.getItemList().add(b1);
+        assertTrue( bangaloreLibrary.isItemInLibrary(101));
 
     }
 
     @Test
     public void isNotBookInLibraryTest() {
-        assertFalse(bangaloreLibrary.isBookInLibrary(5));
+        assertFalse(bangaloreLibrary.isItemInLibrary(5));
 
     }
 
     @Test
     public void successRentBookMsgTest() {
-        bangaloreLibrary.getBookList().add(b1);
-        bangaloreLibrary.getBookList().add(b2);
-        bangaloreLibrary.rentBook(1);
-        assertEquals("Thank you! Enjoy the book\n", outContent.toString());
+        bangaloreLibrary.getItemList().add(b1);
+        bangaloreLibrary.getItemList().add(b2);
+        bangaloreLibrary.rentItem(101, testUser.getLibraryNumber());
+        assertEquals("Thank you! Enjoy the book", outContent.toString());
 
     }
 
 
     @Test
     public void unSuccessRentBookMsgTest() {
-        bangaloreLibrary.rentBook(25);
+        bangaloreLibrary.rentItem(25, testUser.getLibraryNumber());
         assertEquals("That book is not available\n", outContent.toString());
 
     }
 
     @Test
     public void successRentBookTest() {
-        bangaloreLibrary.getBookList().add(b1);
-        bangaloreLibrary.getBookList().add(b2);
-        bangaloreLibrary.rentBook(0);
-        assertFalse(bangaloreLibrary.getBookList().get(0).isAvailable());
+        bangaloreLibrary.getItemList().add(b1);
+        bangaloreLibrary.rentItem(101, testUser.getLibraryNumber());
+        assertFalse(bangaloreLibrary.getItemList().get(0).isAvailable());
 
     }
 
     @Test
     public void succesReturnTest() {
-        bangaloreLibrary.getBookList().add(b1);
-        bangaloreLibrary.getBookList().add(b2);
-        bangaloreLibrary.rentBook(1);
-        assertFalse(bangaloreLibrary.getBookList().get(1).isAvailable());
-        bangaloreLibrary.returnBook(1);
-        assertTrue( bangaloreLibrary.getBookList().get(1).isAvailable());
+        bangaloreLibrary.getItemList().add(b1);
+        bangaloreLibrary.rentItem(101, testUser.getLibraryNumber());
+        assertFalse(bangaloreLibrary.getItem(101).isAvailable());
+        bangaloreLibrary.returnItem(101, testUser.getLibraryNumber());
+        assertTrue( bangaloreLibrary.getItem(101).isAvailable());
 
     }
 
     @Test
     public void successReturnBookMsgTest() {
-        bangaloreLibrary.getBookList().add(b1);
-        bangaloreLibrary.getBookList().add(b2);
-        bangaloreLibrary.rentBook(1);
+        bangaloreLibrary.getItemList().add(b1);
+        bangaloreLibrary.getItemList().add(b2);
+        bangaloreLibrary.rentItem(101, testUser.getLibraryNumber());
         outContent.reset();
-        bangaloreLibrary.returnBook(1);
-        assertEquals("Thank you for returning the book\n", outContent.toString());
+        bangaloreLibrary.returnItem(101, testUser.getLibraryNumber());
+        assertEquals("Thank you for returning the book", outContent.toString());
 
     }
 
     @Test
     public void unSuccessReturnBookMsgTest() {
-        bangaloreLibrary.getBookList().add(b1);
-        bangaloreLibrary.getBookList().add(b2);
-        bangaloreLibrary.returnBook(1);
-        assertEquals("That is not a valid book to return\n", outContent.toString());
+        bangaloreLibrary.getItemList().add(b1);
+        bangaloreLibrary.getItemList().add(b2);
+        bangaloreLibrary.returnItem(101, testUser.getLibraryNumber());
+        assertEquals("That is not a valid book to return", outContent.toString());
 
     }
 
     @Test
     public void loadBooksTest() {
         bangaloreLibrary.loadBooks();
-        assertEquals(9, bangaloreLibrary.getBookList().size());
+        assertEquals(9, bangaloreLibrary.getItemList().size());
 
     }
 
